@@ -1,24 +1,37 @@
 import { Avatar, Button, Container, Text, Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Tab, TabList, TabPanel, TabPanels, Tabs, useDisclosure, Box } from "@chakra-ui/react";
 import axios from 'axios';
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 export function FollowShow(data: any) {
     const { isOpen, onOpen, onClose } = useDisclosure(data.onOpen);
-    const [getdata, setgetdata] = useState<any[]>([]);
+    const [getdatafollowing, setgetdatafollowing] = useState<any[]>([]);
+    const [getdatafollowers, setgetdatafollowers] = useState<any[]>([]);
+    const [tab, settab] = useState(0);
+    console.log(data)
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get(`http://localhost:5000/api/v1/users/${data.data.id}/following`, {
+                const responsefoing = await axios.get(`http://localhost:5000/api/v1/users/${data.data.id}/following`, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                         "authorization": `Bearer ${token}`,
                     },
                 });
-                console.log(response);
-                setgetdata(response.data.data.following.following);
+                // console.log(responsefoing.data.data.following.following);
+                setgetdatafollowing(responsefoing.data.data.following.following);
+
+                const responsefoers = await axios.get(`http://localhost:5000/api/v1/users/${data.data.id}/followers`, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        "authorization": `Bearer ${token}`,
+                    },
+                });
+                // console.log(responsefoers.data.data.followers.followers);
+                setgetdatafollowers(responsefoers.data.data.followers.followers)
             } catch (error) {
                 console.log(error);
             }
@@ -27,21 +40,25 @@ export function FollowShow(data: any) {
         fetchData();
     }, [data.data.id]);
 
-    console.log(getdata);
+    const navigate = useNavigate();
+
+    const handlenav = (id: string) => {
+        navigate("/profile/" + id);
+    }
 
     return (
         <>
-            <Box m={2} onClick={onOpen}>
+            <Box m={2} onClick={() => { onOpen(); settab(0) }}>
                 <Text as="i" fontSize="md" _hover={{ textDecoration: "underline", cursor: "pointer" }} >
                     <Text fontSize="md" as="b" color="tomato" >
-                        1
+                        {getdatafollowing.length}
                     </Text> Following</Text>
             </Box>
 
-            <Box m={2} onClick={onOpen}>
+            <Box m={2} onClick={() => { onOpen(); settab(1) }}>
                 <Text as="i" fontSize="md" _hover={{ textDecoration: "underline", cursor: "pointer" }} >
                     <Text fontSize="md" as="b" color="tomato" >
-                        1
+                        {getdatafollowers.length}
                     </Text > Followers
                 </Text>
             </Box>
@@ -52,20 +69,20 @@ export function FollowShow(data: any) {
                     <ModalCloseButton />
                     <ModalHeader>Name</ModalHeader>
                     <ModalBody>
-                        <Tabs isFitted variant="soft-rounded" colorScheme="gray">
-                            <TabList mb="1em">
+                        <Tabs isFitted variant="soft-rounded" colorScheme="gray" defaultIndex={tab}>
+                            <TabList mb="1em" >
                                 <Tab ml={3}>Following</Tab>
-                                {/* <Tab mr={3}>Followers</Tab> */}
+                                <Tab mr={3}>Followers</Tab>
                             </TabList>
                             <TabPanels>
                                 <TabPanel>
                                     {
-                                        getdata.map((x) =>
+                                        getdatafollowing.map((x) =>
                                             <Flex direction="column" >
                                                 <Flex pt={1} >
-                                                    <Flex borderRadius={40} _hover={{ backgroundColor: "gray.200" }} minW={420}>
+                                                    <Flex borderRadius={40} _hover={{ backgroundColor: "gray.200" }} minW={420} onClick={() => handlenav(x._id)}>
                                                         <Avatar size="lg" mt={1} name={x.firstName}
-                                                            src="http://localhost:5000/uploads/" />
+                                                            src={`http://localhost:5000/uploads/${x["profilePic"].filename}`} />
                                                         <Flex ml={5} color="black" direction="column">
                                                             <Text mt={6}>{x.firstName} {x.lastName}</Text>
                                                             {/* <Text>@something</Text>
@@ -77,12 +94,26 @@ export function FollowShow(data: any) {
                                                 </Flex>
                                             </Flex>)
                                     }
-
-
-
                                 </TabPanel>
                                 <TabPanel>
-                                    <p>two!</p>
+                                    {
+                                        getdatafollowers.map((x) =>
+                                            <Flex direction="column" >
+                                                <Flex pt={1} >
+                                                    <Flex borderRadius={40} _hover={{ backgroundColor: "gray.200" }} onClick={() => handlenav(x._id)} minW={420}>
+                                                        <Avatar size="lg" mt={1} name={x.firstName}
+                                                            src={`http://localhost:5000/uploads/${x["profilePic"].filename}`} />
+                                                        <Flex ml={5} color="black" direction="column">
+                                                            <Text mt={6}>{x.firstName} {x.lastName}</Text>
+                                                            {/* <Text>@something</Text>
+                                                            <Text>Descript</Text> */}
+                                                        </Flex></Flex>
+                                                    <Button size="md" ml={"auto"} borderRadius={40} px={5} mt={4}>
+                                                        Follow
+                                                    </Button>
+                                                </Flex>
+                                            </Flex>)
+                                    }
                                 </TabPanel>
                             </TabPanels>
                         </Tabs>
