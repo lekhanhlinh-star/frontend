@@ -52,9 +52,9 @@ export default function Post(data: any) {
 
     const { isOpen: isOpen1, onOpen: onOpen1, onClose: onClose1 } = useDisclosure();
     const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure();
-    // const { isOpen: isOpen3, onOpen: onOpen3, onClose: onClose3 } = useDisclosure();
+    const { isOpen: isOpen4, onOpen: onOpen4, onClose: onClose4 } = useDisclosure();
     const [isOpen3, setIsOpen3] = useState(false);
-
+    const token = localStorage.getItem("token");
     const handleOpenForm = () => {
         setIsOpen3(true);
     };
@@ -224,8 +224,6 @@ export default function Post(data: any) {
     // -----
     const Deleteclick = (id: string) => {
         console.log(`id is ${data.data._id}`)
-        const token = localStorage.getItem("token");
-
         console.log("token", token);
         axios.delete("http://localhost:5000/api/v1/posts/" + id, {
             headers: {
@@ -255,26 +253,9 @@ export default function Post(data: any) {
 
     const Profileclick = async () => {
         const _id = data.data.postedBy["_id"]
-        var id
-        console.log(`id is ${data.data._id}`)
-        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem('_id');
 
-        console.log("token", token);
-
-        await axios.get("http://localhost:5000/api/v1/users/me", {
-            headers: {
-                "Content-Type": "application/json", "authorization": `Bearer ${token}`,
-            },
-        }).then(response => {
-            id = response.data.data.doc._id;
-            // setProfileinfo(dataUser);
-        }).catch(error => {
-
-            console.log(error)
-        });
-
-
-        if (id == _id) {
+        if (userId == _id) {
             navigate("/profile/");
         }
         else {
@@ -287,13 +268,36 @@ export default function Post(data: any) {
     const postclick = (id: string) => {
         // handlenav(id)
         handlenav(id)
+    }
+
+    const [isreweet, setisreweet] = useState(false)
+
+
+
+    const handleShare = async (id: string) => {
+        await axios.put(`http://localhost:5000/api/v1/posts/${id}/retweet`, {
+            headers: {
+                "Content-Type": "application/json", "authorization": `Bearer ${token}`,
+            },
+        }).then(data => {
+            console.log(data)
+            toast({
+                title: "Share post successful", status: "success", duration: 9000, isClosable: true, position: "top",
+            });
+            window.location.reload();
+        }).catch(err => {
+            console.log(err)
+            toast({
+                title: err.response.data.message, status: "error", duration: 9000, isClosable: true, position: "top",
+            });
+        })
 
     }
 
+
+
     return (<Card my={4} borderRadius="30">
         {isreply ? (<ReplyPost data={dataofreply} />) : null}
-
-
         <CardHeader style={{ cursor: 'pointer' }}>
             <Flex letterSpacing={4}>
                 <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap' style={{ cursor: 'pointer' }}>
@@ -344,7 +348,9 @@ export default function Post(data: any) {
                         </AlertDialog>
                         <MenuItem icon={<EditIcon />} onClick={handleOpenForm}>
                             Edit
+
                         </MenuItem>
+
                         {isOpen3 && <FormEdit data={data.data} onClose={handleCloseForm} />}
 
 
@@ -424,14 +430,9 @@ export default function Post(data: any) {
                                         onChange={handleFileChange}
                                     />
                                     <Button leftIcon={<FcPanorama />} onClick={handleClickSelectFile}>Photo/video
-
                                     </Button>
-
-
                                 </Flex>
                             </Card>
-
-
                         </ModalBody>
 
                         <ModalFooter>
@@ -446,9 +447,32 @@ export default function Post(data: any) {
 
                 </ModalContent>
             </Modal>
-            <Button flex='1' variant='ghost' leftIcon={<BiShare />}>
+            <Button flex='1' variant='ghost' leftIcon={<BiShare />} onClick={onOpen4}>
                 Share
             </Button>
+            <AlertDialog
+                isOpen={isOpen4}
+                leastDestructiveRef={cancelRef}
+                onClose={onClose4}>
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                            You want to share this post
+                        </AlertDialogHeader>
+                        <AlertDialogBody>
+                            Are you sure? You can't undo this action afterwards.
+                        </AlertDialogBody>
+                        <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={onClose4}>
+                                Cancel
+                            </Button>
+                            <Button colorScheme="blue" onClick={() => { handleShare(data.data._id); onClose4(); }} ml={3}>
+                                Share
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
         </CardFooter>
     </Card>);
 

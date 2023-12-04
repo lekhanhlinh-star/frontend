@@ -9,27 +9,29 @@ import {
     FormLabel,
     Heading,
     Input,
+    Link,
     Stack,
     Text,
     useColorModeValue,
     useToast,
 } from '@chakra-ui/react'
 import ForgotPasswordForm from "../../components/ForgotPasswordForm";
-import axios, {isCancel, AxiosError,AxiosResponse} from 'axios';
+import axios, { isCancel, AxiosError, AxiosResponse } from 'axios';
 
 
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login_page() {
 
-    const navigate=useNavigate();
+    const navagate = useNavigate()
+
     const toast = useToast()
     const [inputLoginBody, setInputLoginBody] = useState({
         'email': "", 'password': ""
     });
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = event.target;
+        const { name, value } = event.target;
         setInputLoginBody((prevFormDataPost) => ({
             ...prevFormDataPost, [name]: value,
         }));
@@ -49,10 +51,11 @@ export default function Login_page() {
                 if (response.status >= 200 && response.status <= 300) {
                     console.log(response.data);
                     localStorage.setItem('token', response.data.token);
+                    localStorage.setItem('_id', response.data.data["user"]._id)
                     toast({
                         title: 'Login successful', status: 'success', duration: 9000, isClosable: true, position: 'top',
                     })
-                     navigate('/');
+                    navagate('/');
                 }
 
 
@@ -88,39 +91,44 @@ export default function Login_page() {
         minH={'100vh'}
         align={'center'}
         justify={'center'}
-        bg={useColorModeValue('gray.50', 'gray.800')}>
+        bg={"lightgrey"}
+    >
 
-        <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+        <Stack spacing={12} mx={'auto'} maxW={'lg'} py={12} px={6}>
             <Stack align={'center'}>
-                <Heading fontSize={'4xl'}>Sign in to your account</Heading>
+                <Heading fontSize={'3xl'}>SIGN IN TO YOUR ACCOUNT</Heading>
                 <Text fontSize={'lg'} color={'gray.600'}>
-                    to enjoy all of our cool <Text color={'blue.400'}>features</Text> ✌️
+                    to enjoy all of our cool <Text color={'blue.400'}>features</Text > ✌️
                 </Text>
             </Stack>
             <Box
                 rounded={'lg'}
                 bg={useColorModeValue('white', 'gray.700')}
                 boxShadow={'lg'}
+                minW={500}
+                minH={400}
+
                 p={8}>
                 <form onSubmit={handleLogin}>
                     <Stack spacing={4}>
                         <FormControl id="email">
                             <FormLabel>Email address</FormLabel>
-                            <Input type="email" name={"email"} onChange={handleInputChange}/>
+                            <Input type="email" name={"email"} onChange={handleInputChange} />
                         </FormControl>
                         <FormControl id="password">
                             <FormLabel>Password</FormLabel>
-                            <Input type="password" name={"password"} onChange={handleInputChange} required={true}/>
+                            <Input type="password" name={"password"} onChange={handleInputChange} required={true} />
                         </FormControl>
                         <Stack spacing={10}>
                             <Stack
-                                direction={{base: 'column', sm: 'row'}}
+                                direction={{ base: 'column', sm: 'row' }}
                                 align={'start'}
                                 justify={'space-between'}>
                                 <Checkbox>Remember me</Checkbox>
-                                <Text color={'blue.400'} onClick={e=>{
+                                <Text color={'blue.400'} cursor={"pointer"} onClick={e => {
                                     e.preventDefault();
-                                    navigate('/reset_password');
+                                    navagate('/forgetPassword');
+
                                 }} >Forgot password?</Text>
                             </Stack>
                             <Button
@@ -131,9 +139,13 @@ export default function Login_page() {
                                     bg: 'blue.500',
 
                                 }}>
-
                                 Sign in
                             </Button>
+                            <Text align={'center'}>
+                                Don't have a user? <Link color={'blue.400'} onClick={() => {
+                                    navagate("/signup")
+                                }}>Register</Link>
+                            </Text>
                         </Stack>
                     </Stack>
                 </form>

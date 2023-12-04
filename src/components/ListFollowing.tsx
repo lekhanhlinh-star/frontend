@@ -1,6 +1,6 @@
 'use client'
 
-import React, {ReactNode, useEffect, useState} from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import {
     IconButton,
     Box,
@@ -20,11 +20,7 @@ import {
     DrawerHeader,
     DrawerBody,
 } from '@chakra-ui/react'
-import {
-    FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiMenu,
-} from 'react-icons/fi'
-import { IconType } from 'react-icons'
-import { ReactText } from 'react'
+
 import axios from "axios";
 
 interface LinkItemProps {
@@ -34,56 +30,12 @@ interface LinkItemProps {
 }
 
 
-const LinkItems: Array<LinkItemProps> = [{
-    name: 'Toàn Nguyễn Thi',
-    link: "/home",
-    avatar: "http://127.0.0.1:5000/uploads/1701270079511.png"
-}, {
-    name: 'Nguyễn Huỳnh Thanh Toàn',
-    link: "/home",
-    avatar: "http://127.0.0.1:5000/uploads/1701270079511.png"
-}, {
-    name: 'Toàn Nguyễn',
-    link: "/home",
-    avatar: "http://127.0.0.1:5000/uploads/1701270079511.png"
-}, {
-    name: 'Toàn Nguyễn',
-    link: "/home",
-    avatar: "http://127.0.0.1:5000/uploads/1701270079511.png"
-}, { name: 'Toàn Nguyễn', link: "/home", avatar: "http://127.0.0.1:5000/uploads/1701270079511.png" },
-{ name: 'Toàn Nguyễn', link: "/home", avatar: "http://127.0.0.1:5000/uploads/1701270079511.png" },
-{ name: 'Toàn Nguyễn', link: "/home", avatar: "http://127.0.0.1:5000/uploads/1701270079511.png" },
-{ name: 'Toàn Nguyễn', link: "/home", avatar: "http://127.0.0.1:5000/uploads/1701270079511.png" },
-{ name: 'Toàn Nguyễn', link: "/home", avatar: "http://127.0.0.1:5000/uploads/1701270079511.png" },
-{ name: 'Toàn Nguyễn', link: "/home", avatar: "http://127.0.0.1:5000/uploads/1701270079511.png" }]
+
 
 
 export default function ListFollowing() {
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [DataFollow, setDataFollow] = useState([] as any[]);
 
-    useEffect(() => {
-
-        const getFollowing = async () =>{
-         await axios.get("http://localhost:5000/api/v1/users/me").then(
-             response => {
-                 const user_list_following = response.data.data["doc"]["following"]
-                 console.log("user_list_following",user_list_following)
-                 setDataFollow(user_list_following)
-
-             }
-         ).catch(err =>{
-             console.log(err)
-         })
-
-        }
-        getFollowing()
-    }, []);
-    console.log("check follow",DataFollow)
-    const LinkFollow: Array<LinkItemProps> = DataFollow.map(
-        (item: any) => { return {name:item.firstName+" "+item.lastName ,link:"/profile/"+item._id,avatar:"http://127.0.0.1:5000/uploads/1701270079511.png"}}
-    )
-    console.log("abc555",LinkFollow)
     // pos={"fixed"}
     return (<Box minH="100vh" bg={useColorModeValue("white", 'gray.900')}>
         <SidebarContent onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
@@ -113,6 +65,25 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+    const [DataFollow, setDataFollow] = useState([] as any[]);
+    // const LinkItems: Array<any> = []
+    useEffect(() => {
+        const getFollowing = async () => {
+            await axios.get("http://localhost:5000/api/v1/users/me").then(
+                response => {
+                    const user_list_following = response.data.data["doc"]["following"]
+                    console.log("user_list_following", user_list_following)
+                    setDataFollow(user_list_following)
+
+                }
+            ).catch(err => {
+                console.log(err)
+            })
+
+        }
+        getFollowing()
+    }, [rest]);
+
     return (<Box
         borderRight="1px"
         borderRightColor={useColorModeValue('gray.200', 'gray.700')}
@@ -156,7 +127,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         </Box>
 
 
-        {LinkItems.map((link) => (<NavItem key={link.name} name={link.name} link={link.link} avatar={link.avatar}>
+        {DataFollow.map((link) => (<NavItem key={link.firstName} name={link.firstName + " " + link.lastName} link={`/profile/${link._id}`} avatar={`http://127.0.0.1:5000/uploads/${link.profilePic.filename}`}>
         </NavItem>))}
     </Box>)
 }

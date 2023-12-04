@@ -1,15 +1,15 @@
 import Header from "../../components/Common/Header";
-import {Box, Flex} from "@chakra-ui/react";
+import { Box, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import Sidebar from "../../components/Sidebar";
 
 import CoverPicClient from "../../components/Profile_Client/CoverPicClient";
-import {useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import NotFound from "../NotFound/NotFound"
 
+import { WarningTwoIcon } from '@chakra-ui/icons'
+import NotFound from "../NotFound/NotFound"
 interface ProfileInfo {
-    _id: string
     firstName: string;
     lastName: string;
     profilePic: { filename: string | undefined };
@@ -58,21 +58,21 @@ export const Profile_page_client = () => {
 
 
         {loadTrue ? (<Box>
-            <Header firstName={""} lastName={""} profilePic={""}/>
-                <Flex bg={"white"} height={5}>
-                    <Sidebar/>
-                </Flex>
+            <Header firstName={""} lastName={""} profilePic={""} />
+            <Flex bg={"white"} height={5}>
+                <Sidebar />
+            </Flex>
 
 
-                <Box bg={"gray.200"} alignItems={"center"}>
+            <Box bg={"gray.200"} alignItems={"center"}>
 
 
-                    <CoverPicClient id={profileinfo?._id} lastName={profileinfo?.firstName} firstName={profileinfo?.lastName} coverPhoto={profileinfo?.coverPhoto.filename}
-                                    profilePic={profileinfo?.profilePic.filename}></CoverPicClient>
+                <CoverPicClient id={id.id} lastName={profileinfo?.firstName} firstName={profileinfo?.lastName} coverPhoto={profileinfo?.coverPhoto.filename}
+                    profilePic={profileinfo?.profilePic.filename}></CoverPicClient>
 
-                </Box>
+            </Box>
 
-            </Box>) :
+        </Box>) :
             (
                 <NotFound></NotFound>
             )

@@ -16,31 +16,32 @@ import {
     Text,
     useColorModeValue, useToast,
 } from '@chakra-ui/react'
-import React, {useState} from 'react'
-import {ViewIcon, ViewOffIcon} from '@chakra-ui/icons'
+import React, { useState } from 'react'
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 
-import axios, {isCancel, AxiosError,AxiosResponse} from 'axios';
-import {useNavigate} from "react-router-dom";
+import axios, { isCancel, AxiosError, AxiosResponse } from 'axios';
+import { useNavigate } from "react-router-dom";
 
 export default function SignUpPage() {
-    const navagate=useNavigate()
-    const toast=useToast()
+    const navagate = useNavigate()
+    const toast = useToast()
+
     const [InputBodySignUp, setInputBodySignUp] = useState({
         email: '', password: '', firstName: '', lastName: '', passwordConfirm: ""
 
     });
     const [showPassword, setShowPassword] = useState(false)
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = event.target;
+        const { name, value } = event.target;
         setInputBodySignUp((prevFormDataPost) => ({
             ...prevFormDataPost, [name]: value,
         }));
     }
-    const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         // Access the values from the state variable InputBodySignUp
-        const {email, password, firstName, lastName, passwordConfirm} = InputBodySignUp;
+        const { email, password, firstName, lastName, passwordConfirm } = InputBodySignUp;
         console.log(InputBodySignUp);
 
         // Perform any necessary validation or processing on the form data
@@ -48,23 +49,24 @@ export default function SignUpPage() {
 
         try {
             // Make an API call using the fetch function
-            await axios.post('http://localhost:5000/api/v1/users/signup',JSON.stringify(InputBodySignUp),{headers: {
+            await axios.post('http://localhost:5000/api/v1/users/signup', JSON.stringify(InputBodySignUp), {
+                headers: {
                     'Content-Type': 'application/json',
-                }}).then(response=>{
-                    console.log(response.data);
-                    localStorage.setItem('token', response.data.token);
-                    toast({
-                        title: 'Sign up successful',
-                        status:'success',
-                        duration: 900,
-                        position: 'top',
-                        isClosable: true,
-                    })
+                }
+            }).then(response => {
+                console.log(response.data);
+                localStorage.setItem('token', response.data.token);
+                toast({
+                    title: 'Sign up successful',
+                    status: 'success',
+                    duration: 900,
+                    position: 'top',
+                    isClosable: true,
+                })
 
 
-            }).catch(e=>
-            {
-                if(e.response.status ==400){
+            }).catch(e => {
+                if (e.response.status == 400) {
                     toast({
                         title: e.response.data.message,
                         status: 'error',
@@ -92,7 +94,7 @@ export default function SignUpPage() {
         <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
             <Stack align={'center'}>
                 <Heading fontSize={'4xl'} textAlign={'center'}>
-                    Sign up
+                    SIGN UP
                 </Heading>
                 <Text fontSize={'lg'} color={'gray.600'}>
                     to enjoy all of our cool features ✌️
@@ -109,29 +111,29 @@ export default function SignUpPage() {
                             <Box>
                                 <FormControl id="firstName" isRequired>
                                     <FormLabel>First Name</FormLabel>
-                                    <Input type="text" name={"firstName"} onChange={handleInputChange}/>
+                                    <Input type="text" name={"firstName"} onChange={handleInputChange} />
                                 </FormControl>
                             </Box>
                             <Box>
                                 <FormControl id="lastName">
                                     <FormLabel>Last Name</FormLabel>
-                                    <Input type="text" name={"lastName"}  onChange={handleInputChange}/>
+                                    <Input type="text" name={"lastName"} onChange={handleInputChange} />
                                 </FormControl>
                             </Box>
                         </HStack>
                         <FormControl id="email" isRequired>
                             <FormLabel>Email address</FormLabel>
-                            <Input type="email" name={"email"} onChange={handleInputChange}/>
+                            <Input type="email" name={"email"} onChange={handleInputChange} />
                         </FormControl>
                         <FormControl id="password" isRequired>
                             <FormLabel>Password</FormLabel>
                             <InputGroup>
-                                <Input type={showPassword ? 'text' : 'password'} name={"password"} onChange={handleInputChange}/>
+                                <Input type={showPassword ? 'text' : 'password'} name={"password"} onChange={handleInputChange} />
                                 <InputRightElement h={'full'}>
                                     <Button
                                         variant={'ghost'}
                                         onClick={() => setShowPassword((showPassword) => !showPassword)}>
-                                        {showPassword ? <ViewIcon/> : <ViewOffIcon/>}
+                                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                                     </Button>
                                 </InputRightElement>
                             </InputGroup>
@@ -140,12 +142,12 @@ export default function SignUpPage() {
                         <FormControl id="passwordConfirm" isRequired>
                             <FormLabel>Password Confirm</FormLabel>
                             <InputGroup>
-                                <Input type={showPassword ? 'text' : 'password'} name={"passwordConfirm"} onChange={handleInputChange}/>
+                                <Input type={showPassword ? 'text' : 'password'} name={"passwordConfirm"} onChange={handleInputChange} />
                                 <InputRightElement h={'full'}>
                                     <Button
                                         variant={'ghost'}
                                         onClick={() => setShowPassword((showPassword) => !showPassword)}>
-                                        {showPassword ? <ViewIcon/> : <ViewOffIcon/>}
+                                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                                     </Button>
                                 </InputRightElement>
                             </InputGroup>
@@ -166,7 +168,9 @@ export default function SignUpPage() {
                         </Stack>
                         <Stack pt={6}>
                             <Text align={'center'}>
-                                Already a user? <Link color={'blue.400'}>Login</Link>
+                                Already a user? <Link color={'blue.400'} onClick={() => {
+                                    navagate(-1)
+                                }}>Login</Link>
                             </Text>
                         </Stack>
                     </form>

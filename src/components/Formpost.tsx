@@ -79,6 +79,7 @@ export function Formpost(props: ProfileInfo) {
         }));
 
     };
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
@@ -99,7 +100,7 @@ export function Formpost(props: ProfileInfo) {
                 toast({
                     title: "Create new post successful", status: "success", duration: 9000, isClosable: true, position: "top",
                 });
-                // window.location.reload();
+                window.location.reload();
             }).catch(error => {
                 toast({
                     title: error.response.data.message, status: "error", duration: 9000, isClosable: true, position: "top",
@@ -122,13 +123,13 @@ export function Formpost(props: ProfileInfo) {
         <Card minH={"120px"} mb={3} mt={10}>
 
 
-            <Flex borderRadius={"10px"}>
-                <Center ml={10}>
-                    <Avatar name={props.firstName} src={"http://127.0.0.1:5000/uploads/" + props.profilePic} />
+            <Flex borderRadius={"10px"} pt={5}>
+                <Center ml={5}>
+                    <Avatar as={"a"} href="/profile" name={props.firstName} src={"http://127.0.0.1:5000/uploads/" + props.profilePic} />
                 </Center>
 
                 <Center>
-                    <Input placeholder="What's happening?" size={"lg"} minW={"400px"} m={4} onClick={onOpen}
+                    <Input placeholder="What's happening?" size={"lg"} minW={"500px"} isReadOnly m={4} cursor={"pointer"} onClick={onOpen}
 
                         borderRadius={50}></Input>
                     <Modal isOpen={isOpen} onClose={onClose}>
@@ -201,14 +202,6 @@ export function Formpost(props: ProfileInfo) {
             <Flex justify={"space-between"}
                 alignItems="center"
                 justifyContent="center" pb={5}>
-
-                <Button leftIcon={<FcPanorama />} aria-label={"Image_post"}
-                    ml={5}>Photo/video</Button>
-                <Spacer />
-                <Button leftIcon={<FcPanorama />}>Photo/video</Button>
-                <Spacer />
-                <Button mr={5} leftIcon={<FcPanorama />}>Photo/video</Button>
-
 
             </Flex>
 

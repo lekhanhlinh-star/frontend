@@ -21,7 +21,6 @@ export function FollowShow(data: any) {
                         "authorization": `Bearer ${token}`,
                     },
                 });
-                // console.log(responsefoing.data.data.following.following);
                 setgetdatafollowing(responsefoing.data.data.following.following);
 
                 const responsefoers = await axios.get(`http://localhost:5000/api/v1/users/${data.data.id}/followers`, {
@@ -30,7 +29,6 @@ export function FollowShow(data: any) {
                         "authorization": `Bearer ${token}`,
                     },
                 });
-                // console.log(responsefoers.data.data.followers.followers);
                 setgetdatafollowers(responsefoers.data.data.followers.followers)
             } catch (error) {
                 console.log(error);
@@ -38,12 +36,21 @@ export function FollowShow(data: any) {
         };
 
         fetchData();
-    }, [data.data.id]);
+    }, [data.data.status]);
 
     const navigate = useNavigate();
 
-    const handlenav = (id: string) => {
-        navigate("/profile/" + id);
+    const handlenav = async (id_u: string) => {
+        // const _id = data.data.postedBy["_id"]
+        const userId = localStorage.getItem('_id');
+
+        if (userId == id_u) {
+            navigate("/profile/");
+        }
+        else {
+            navigate("/profile/" + id_u);
+
+        }
     }
 
     return (
@@ -80,13 +87,18 @@ export function FollowShow(data: any) {
                                         getdatafollowing.map((x) =>
                                             <Flex direction="column" >
                                                 <Flex pt={1} >
-                                                    <Flex borderRadius={40} _hover={{ backgroundColor: "gray.200" }} minW={420} onClick={() => handlenav(x._id)}>
+                                                    <Flex borderRadius={40} _hover={{ backgroundColor: "gray.200" }} minW={420}
+                                                        onClick={() => {
+                                                            handlenav(x._id);
+                                                            onClose();
+                                                            window.location.reload();
+
+                                                        }}>
                                                         <Avatar size="lg" mt={1} name={x.firstName}
                                                             src={`http://localhost:5000/uploads/${x["profilePic"].filename}`} />
                                                         <Flex ml={5} color="black" direction="column">
                                                             <Text mt={6}>{x.firstName} {x.lastName}</Text>
-                                                            {/* <Text>@something</Text>
-                                                            <Text>Descript</Text> */}
+
                                                         </Flex></Flex>
                                                     <Button size="md" ml={"auto"} borderRadius={40} px={5} mt={4}>
                                                         Follow
@@ -100,13 +112,17 @@ export function FollowShow(data: any) {
                                         getdatafollowers.map((x) =>
                                             <Flex direction="column" >
                                                 <Flex pt={1} >
-                                                    <Flex borderRadius={40} _hover={{ backgroundColor: "gray.200" }} onClick={() => handlenav(x._id)} minW={420}>
+                                                    <Flex borderRadius={40} _hover={{ backgroundColor: "gray.200" }}
+                                                        onClick={() => {
+                                                            handlenav(x._id);
+                                                            onClose();
+                                                            window.location.reload();
+                                                        }} minW={420}>
                                                         <Avatar size="lg" mt={1} name={x.firstName}
                                                             src={`http://localhost:5000/uploads/${x["profilePic"].filename}`} />
                                                         <Flex ml={5} color="black" direction="column">
                                                             <Text mt={6}>{x.firstName} {x.lastName}</Text>
-                                                            {/* <Text>@something</Text>
-                                                            <Text>Descript</Text> */}
+
                                                         </Flex></Flex>
                                                     <Button size="md" ml={"auto"} borderRadius={40} px={5} mt={4}>
                                                         Follow

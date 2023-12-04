@@ -56,7 +56,7 @@ const CoverPicClient = (props: ProfileInfo) => {
                     }).then(data => {
                         console.log(data.data.data.isFollowing)
                         if (data.data.data.isFollowing) {
-                            setisfollow(!isfollow)
+                            setisfollow(true)
                         }
                     })
             } catch {
@@ -68,12 +68,9 @@ const CoverPicClient = (props: ProfileInfo) => {
 
 
     const handleClickst = async () => {
-
         try {
             console.log("onSubmit");
             // Perform any necessary post creation logic here
-
-
             console.log("token", token);
 
             await axios.put(`http://localhost:5000/api/v1/users/${props.id}/follow`, {
@@ -83,7 +80,7 @@ const CoverPicClient = (props: ProfileInfo) => {
             }).then(response => {
                 console.log(response.data);
                 toast({
-                    title: "Create new post successful", status: "success", duration: 9000, isClosable: true, position: "top",
+                    title: "Successful", status: "success", duration: 9000, isClosable: true, position: "top",
                 });
             }).catch(error => {
                 toast({
@@ -94,6 +91,7 @@ const CoverPicClient = (props: ProfileInfo) => {
         } catch (e) {
             console.log(e);
         }
+        setisfollow(!isfollow)
 
     };
 
@@ -151,25 +149,13 @@ const CoverPicClient = (props: ProfileInfo) => {
                             </Flex>
 
                             <Flex minWidth="max-content" gap="2">
-                                {/* <Box p="2">
 
-                                    <Text as="i" fontSize="md">
-                                        <Text fontSize="md" as="b" color="tomato">
-                                            1
-                                        </Text> Following</Text>
-                                </Box>
-                                <Box p="2">
-                                    <Text as="i" fontSize="md">
-                                        <Text fontSize="md" as="b" color="tomato">
-                                            1
-                                        </Text> Followers</Text>
-                                </Box> */}
                                 <FollowShow data={{
                                     id: props?.id,
+                                    status: isfollow
                                 }} />
                                 <Spacer />
-                                {isfollow ? <Button onClick={handleClickst}> Follow</Button> :
-                                    <Button onClick={handleClickst}> Following</Button>}
+                                <Button onClick={handleClickst}>{isfollow === true ? "Following" : "Follow"} </Button>
 
 
                             </Flex>

@@ -1,40 +1,40 @@
-import {RouterProvider, createBrowserRouter} from "react-router-dom";
-import {useAuth} from "../provider/AuthProvider";
-import {ProtectedRoute} from "../components/ProtectedRoute";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { useAuth } from "../provider/AuthProvider";
+import { ProtectedRoute } from "../components/ProtectedRoute";
 import Login_page from "../pages/Auth/Login_page";
-import {Home_page} from "../pages/Home/home";
-import {Profile_page} from "../pages/Profile/Profile_page";
+import { Home_page } from "../pages/Home/home";
+import { Profile_page } from "../pages/Profile/Profile_page";
 import ForgotPasswordForm from "../components/ForgotPasswordForm";
 import ResetPasswordForm from "../components/ResetPasswordForm";
 import SignUpPage from "../pages/Auth/SignUpPage";
-import {Profile_page_client} from "../pages/Profile/Profile_page_client";
+import { Profile_page_client } from "../pages/Profile/Profile_page_client";
 import NotFound from "../pages/NotFound/NotFound";
-import {PostWithComment} from "../components/PostwithComment";
-import {Explore} from "../components/Explore";
-import {Message} from "../components/Message";
+import { PostWithComment } from "../components/PostwithComment";
+import { Explore } from "../components/Explore";
+import { Message } from "../components/Message";
 const Routes = () => {
     const token = useAuth();
 
 
     // Define public routes accessible to all users
     const routesForPublic = [{
-        path: "/forget_password", element: <ForgotPasswordForm/>,
+        path: "/forgetPassword", element: <ForgotPasswordForm />,
 
     }, {
-        path: "/login", element: <Login_page/>,
+        path: "/login", element: <Login_page />,
     },
-        {
-            path: "/resetPassword", element: <ResetPasswordForm/>,
+    {
+        path: "/resetPassword", element: <ResetPasswordForm />,
 
-        }, {
-            path: "/signUp", element: <SignUpPage/>,
-        },
-        {
-           path: "*", element: <NotFound/>,
-        },
-       {
-      path: "/post/:id",
-      element: <PostWithComment />,
+    }, {
+        path: "/signUp", element: <SignUpPage />,
+    },
+    {
+        path: "*", element: <NotFound />,
+    },
+    {
+        path: "/post/:id",
+        element: <PostWithComment />,
     },
 
 
@@ -42,24 +42,24 @@ const Routes = () => {
 
     // Define routes accessible only to authenticated users
     const routesForAuthenticatedOnly = [{
-        path: "/", element: <ProtectedRoute/>, // Wrap the component in ProtectedRoute
+        path: "/", element: <ProtectedRoute />, // Wrap the component in ProtectedRoute
         children: [{
-            path: "/", element: <Home_page/>,
+            path: "/", element: <Home_page />,
         }, {
-            path: "/profile", element: <Profile_page/>,
-        },{
-            path: "/profile/:id", element: <Profile_page_client/>,
+            path: "/profile", element: <Profile_page />,
+        }, {
+            path: "/profile/:id", element: <Profile_page_client />,
 
 
         },
         {
-        path: "/explore", element: <Explore />,
+            path: "/explore", element: <Explore />,
 
-    },
-            {
-        path: "/message", element: <Message />,
+        },
+        {
+            path: "/message", element: <Message />,
 
-    },
+        },
 
 
         ],
@@ -75,7 +75,7 @@ const Routes = () => {
     const router = createBrowserRouter([...routesForPublic, ...(!token ? routesForNotAuthenticatedOnly : []), ...routesForAuthenticatedOnly,]);
 
     // Provide the router configuration using RouterProvider
-    return <RouterProvider router={router}/>;
+    return <RouterProvider router={router} />;
 };
 
 export default Routes;
