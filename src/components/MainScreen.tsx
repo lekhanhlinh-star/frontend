@@ -30,7 +30,6 @@ export function MainScreen(props: ProfileInfo) {
                 const response = await axios.get(
                     `http://localhost:5000/api/v1/posts?limit=5&page=${offset}`, {
                     headers: { "Content-Type": "application/json", "authorization": `Bearer ${token}` },
-
                 }
                 );
                 const data = response.data["data"]["doc"];
@@ -73,8 +72,8 @@ export function MainScreen(props: ProfileInfo) {
                     {postList.map((innerArray) =>
                         innerArray.map((post: any) => <Post data={post} />)
                     )}
+                    <ListFollowing />
                 </Container>
-                <ListFollowing />
             </Flex>
         </>
     );

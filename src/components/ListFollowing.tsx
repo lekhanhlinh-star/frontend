@@ -72,7 +72,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             await axios.get("http://localhost:5000/api/v1/users/me").then(
                 response => {
                     const user_list_following = response.data.data["doc"]["following"]
-                    console.log("user_list_following", user_list_following)
+                    // console.log("user_list_following", user_list_following)
                     setDataFollow(user_list_following)
 
                 }
@@ -89,8 +89,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         borderRightColor={useColorModeValue('gray.200', 'gray.700')}
         w={{ base: 'full' }}
         maxHeight={"100%"}
-        // pos={"fixed"}
-
         position={"fixed"}
         overflow={"scroll"}
         overflowY={"scroll"}

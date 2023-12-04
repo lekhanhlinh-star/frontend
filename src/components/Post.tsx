@@ -44,11 +44,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { FcPanorama } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { FormEdit } from "./FormEdit";
+import { PostShare } from "./PostShare.";
+
 
 export default function Post(data: any) {
-
+    console.log(data)
     // const cancelRef = React.useRef()
     const cancelRef = useRef<HTMLButtonElement>(null);
+
 
     const { isOpen: isOpen1, onOpen: onOpen1, onClose: onClose1 } = useDisclosure();
     const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure();
@@ -100,6 +103,25 @@ export default function Post(data: any) {
         fetchData();
     }, []);
 
+    const [dataofreweet, setdataofreweet] = useState<any>(null);
+    const [isreweet, setisreweet] = useState(false);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (data.data.replyTo) {
+                    await axios.get(`http://127.0.0.1:5000/api/v1/posts/${data.data.retweetUsers}`).then(data => {
+                        setdataofreweet(data.data["data"]["doc"])
+                        setisreweet(true)
+
+                    })
+                }
+            } catch {
+            }
+        };
+
+        fetchData();
+    }, []);
+
 
     var check_post2 = false
     try {
@@ -116,7 +138,6 @@ export default function Post(data: any) {
 
 
         const icon = button?.querySelector('.bi-like') as HTMLElement;
-        const like_c = button.textContent
 
 
         if (icon) {
@@ -177,8 +198,7 @@ export default function Post(data: any) {
         let { name, value } = event.target;
         name = "image"
 
-        console.log("name", name)
-        console.log("File changed", value)
+
         setFormDataPost((prevFormDataPost) => ({
             ...prevFormDataPost, [name]: selectedFile,
         }));
@@ -191,12 +211,9 @@ export default function Post(data: any) {
 
         try {
             console.log("onSubmit")
-            console.log(formDataPost);
-            console.log("----loading--")
+
             const token = localStorage.getItem("token");
 
-            console.log("token", token)
-            console.log(`id is ${data.data._id}`)
 
             axios.post('http://localhost:5000/api/v1/posts', {
                 content: formDataPost.content, image: formDataPost.image, replyTo: data.data._id,
@@ -223,14 +240,12 @@ export default function Post(data: any) {
     const toast = useToast();
     // -----
     const Deleteclick = (id: string) => {
-        console.log(`id is ${data.data._id}`)
-        console.log("token", token);
         axios.delete("http://localhost:5000/api/v1/posts/" + id, {
             headers: {
                 "Content-Type": "application/json", "authorization": `Bearer ${token}`,
             },
         }).then(data => {
-            console.log(data)
+            // console.log(data)
             toast({
                 title: "Delete post successful", status: "success", duration: 9000, isClosable: true, position: "top",
             });
@@ -270,7 +285,7 @@ export default function Post(data: any) {
         handlenav(id)
     }
 
-    const [isreweet, setisreweet] = useState(false)
+
 
 
 
@@ -298,6 +313,7 @@ export default function Post(data: any) {
 
     return (<Card my={4} borderRadius="30">
         {isreply ? (<ReplyPost data={dataofreply} />) : null}
+
         <CardHeader style={{ cursor: 'pointer' }}>
             <Flex letterSpacing={4}>
                 <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap' style={{ cursor: 'pointer' }}>
@@ -474,6 +490,7 @@ export default function Post(data: any) {
                 </AlertDialogOverlay>
             </AlertDialog>
         </CardFooter>
+        {isreweet ? (<PostShare data={dataofreweet} />) : null}
     </Card>);
 
 }

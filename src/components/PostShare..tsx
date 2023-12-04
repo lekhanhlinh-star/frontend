@@ -25,7 +25,7 @@ import Header from "./Common/Header"
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
 
-export function PostWithComment() {
+export function PostShare(data: any) {
     const id = useParams();
     // http://localhost:5000/api/v1/posts
     console.log("---")
@@ -34,6 +34,7 @@ export function PostWithComment() {
     const [main_post, setmain_post] = useState<any>();
 
     const [comment, setcomment] = useState<any>([])
+
     useEffect(() => {
         const fetchData = async () => {
             try {
