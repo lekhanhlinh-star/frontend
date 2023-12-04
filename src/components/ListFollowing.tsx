@@ -1,6 +1,6 @@
 'use client'
 
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useState } from 'react'
 import {
     IconButton,
     Box,
@@ -67,28 +67,32 @@ interface SidebarProps extends BoxProps {
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
     const [DataFollow, setDataFollow] = useState([] as any[]);
     // const LinkItems: Array<any> = []
-    useEffect(() => {
-        const getFollowing = async () => {
-            await axios.get("http://localhost:5000/api/v1/users/me").then(
-                response => {
-                    const user_list_following = response.data.data["doc"]["following"]
-                    // console.log("user_list_following", user_list_following)
-                    setDataFollow(user_list_following)
+    const [loading, setLoading] = useState(true);
 
-                }
-            ).catch(err => {
-                console.log(err)
-            })
-
+    const getFollowing = useCallback(async () => {
+        try {
+            const response = await axios.get("http://localhost:5000/api/v1/users/me");
+            const user_list_following = response.data.data["doc"]["following"];
+            setDataFollow(user_list_following);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
         }
-        getFollowing()
-    }, [rest]);
+    }, []);
+
+    useEffect(() => {
+        getFollowing();
+    }, [loading]);
+
 
     return (<Box
         borderRight="1px"
         borderRightColor={useColorModeValue('gray.200', 'gray.700')}
         w={{ base: 'full' }}
         maxHeight={"100%"}
+        // pos={"fixed"}
+
         position={"fixed"}
         overflow={"scroll"}
         overflowY={"scroll"}

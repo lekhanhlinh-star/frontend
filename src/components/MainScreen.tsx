@@ -72,8 +72,8 @@ export function MainScreen(props: ProfileInfo) {
                     {postList.map((innerArray) =>
                         innerArray.map((post: any) => <Post data={post} />)
                     )}
-                    <ListFollowing />
                 </Container>
+                <ListFollowing />
             </Flex>
         </>
     );
