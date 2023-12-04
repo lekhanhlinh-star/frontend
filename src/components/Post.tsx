@@ -229,7 +229,7 @@ export default function Post(data: any) {
         console.log("token", token);
         axios.delete("http://localhost:5000/api/v1/posts/" + id, {
             headers: {
-                "Content-Type": "multipart/form-data", "authorization": `Bearer ${token}`,
+                "Content-Type": "application/json", "authorization": `Bearer ${token}`,
             },
         }).then(data => {
             console.log(data)
@@ -253,9 +253,34 @@ export default function Post(data: any) {
     }
 
 
-    const profileclick = () => {
+    const Profileclick = async () => {
         const _id = data.data.postedBy["_id"]
-        navigate("/profile/" + _id);
+        var id
+        console.log(`id is ${data.data._id}`)
+        const token = localStorage.getItem("token");
+
+        console.log("token", token);
+
+        await axios.get("http://localhost:5000/api/v1/users/me", {
+            headers: {
+                "Content-Type": "application/json", "authorization": `Bearer ${token}`,
+            },
+        }).then(response => {
+            id = response.data.data.doc._id;
+            // setProfileinfo(dataUser);
+        }).catch(error => {
+
+            console.log(error)
+        });
+
+
+        if (id == _id) {
+            navigate("/profile/");
+        }
+        else {
+            navigate("/profile/" + _id);
+
+        }
 
     }
 
@@ -273,12 +298,12 @@ export default function Post(data: any) {
             <Flex letterSpacing={4}>
                 <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap' style={{ cursor: 'pointer' }}>
 
-                    <Avatar onClick={profileclick} style={{ cursor: 'pointer' }} name='Segun Adebayo'
+                    <Avatar onClick={Profileclick} style={{ cursor: 'pointer' }} name='Segun Adebayo'
                         src={`http://127.0.0.1:5000/uploads/${data.data.postedBy["profilePic"].filename}`} />
 
                     <Box>
                         <Heading size='sm'></Heading>
-                        <Text onClick={profileclick}
+                        <Text onClick={Profileclick}
                             style={{ cursor: 'pointer' }}>{`${data.data.postedBy["firstName"]} ${data.data.postedBy["lastName"]}`}</Text>
                     </Box>
                 </Flex>

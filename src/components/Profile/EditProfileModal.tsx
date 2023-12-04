@@ -50,7 +50,7 @@ export const EditProfileModal = () => {
             try {
                 await axios.get("http://localhost:5000/api/v1/users/me", {
                     headers: {
-                        "Content-Type": "multipart/form-data", "authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json", "authorization": `Bearer ${token}`,
                     },
                 }).then(response => {
                     const dataUser: ProfileInfo = response.data.data.doc;

@@ -1,15 +1,15 @@
 import Header from "../../components/Common/Header";
-import {Box, Flex, Heading, Image, Text} from "@chakra-ui/react";
+import {Box, Flex} from "@chakra-ui/react";
 import Sidebar from "../../components/Sidebar";
 
 import CoverPicClient from "../../components/Profile_Client/CoverPicClient";
 import {useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-
-import {WarningTwoIcon} from '@chakra-ui/icons'
 import NotFound from "../NotFound/NotFound"
+
 interface ProfileInfo {
+    _id: string
     firstName: string;
     lastName: string;
     profilePic: { filename: string | undefined };
@@ -67,7 +67,7 @@ export const Profile_page_client = () => {
                 <Box bg={"gray.200"} alignItems={"center"}>
 
 
-                    <CoverPicClient lastName={profileinfo?.firstName} firstName={profileinfo?.lastName} coverPhoto={profileinfo?.coverPhoto.filename}
+                    <CoverPicClient id={profileinfo?._id} lastName={profileinfo?.firstName} firstName={profileinfo?.lastName} coverPhoto={profileinfo?.coverPhoto.filename}
                                     profilePic={profileinfo?.profilePic.filename}></CoverPicClient>
 
                 </Box>

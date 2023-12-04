@@ -9,6 +9,7 @@ import ListFollowing from "./ListFollowing";
 
 
 interface ProfileInfo {
+
     firstName: string | undefined
     lastName: string | undefined
     profilePic: string | undefined

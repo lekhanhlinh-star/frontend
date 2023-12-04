@@ -232,7 +232,7 @@ const CoverPicture = () => {
                             >
                                 <ModalOverlay px={90}>
                                     <ModalContent>
-                                        <ModalHeader ml={0}>Edit profile</ModalHeader>
+                                        <ModalHeader ml={0}>Avatar</ModalHeader>
                                         <ModalCloseButton />
                                         <ModalBody>
                                             <input

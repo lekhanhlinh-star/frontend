@@ -1,6 +1,6 @@
 'use client'
 
-import React, {ReactNode, useEffect, useState} from 'react'
+import React, { ReactNode } from 'react'
 import {
     IconButton,
     Box,
@@ -18,14 +18,13 @@ import {
     Heading,
     DrawerOverlay,
     DrawerHeader,
-    DrawerBody,
+    DrawerBody, Input,
 } from '@chakra-ui/react'
 import {
     FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiMenu,
 } from 'react-icons/fi'
 import { IconType } from 'react-icons'
 import { ReactText } from 'react'
-import axios from "axios";
 
 interface LinkItemProps {
     name: string
@@ -33,23 +32,22 @@ interface LinkItemProps {
     avatar: string
 }
 
-
 const LinkItems: Array<LinkItemProps> = [{
     name: 'Toàn Nguyễn Thi',
     link: "/home",
-    avatar: "http://127.0.0.1:5000/uploads/1701270079511.png"
+    avatar: "http://localhost:5000/uploads/1700656445602.png"
 }, {
     name: 'Nguyễn Huỳnh Thanh Toàn',
     link: "/home",
-    avatar: "http://127.0.0.1:5000/uploads/1701270079511.png"
+    avatar: "http://localhost:5000/uploads/1700656445602.png"
 }, {
     name: 'Toàn Nguyễn',
     link: "/home",
-    avatar: "http://127.0.0.1:5000/uploads/1701270079511.png"
+    avatar: "http://localhost:5000/uploads/1700656445602.png"
 }, {
     name: 'Toàn Nguyễn',
     link: "/home",
-    avatar: "http://127.0.0.1:5000/uploads/1701270079511.png"
+    avatar: "http://localhost:5000/uploads/1700656445602.png"
 }, { name: 'Toàn Nguyễn', link: "/home", avatar: "http://127.0.0.1:5000/uploads/1701270079511.png" },
 { name: 'Toàn Nguyễn', link: "/home", avatar: "http://127.0.0.1:5000/uploads/1701270079511.png" },
 { name: 'Toàn Nguyễn', link: "/home", avatar: "http://127.0.0.1:5000/uploads/1701270079511.png" },
@@ -58,38 +56,16 @@ const LinkItems: Array<LinkItemProps> = [{
 { name: 'Toàn Nguyễn', link: "/home", avatar: "http://127.0.0.1:5000/uploads/1701270079511.png" }]
 
 
-export default function ListFollowing() {
+export default function SideBarChat() {
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [DataFollow, setDataFollow] = useState([] as any[]);
 
-    useEffect(() => {
 
-        const getFollowing = async () =>{
-         await axios.get("http://localhost:5000/api/v1/users/me").then(
-             response => {
-                 const user_list_following = response.data.data["doc"]["following"]
-                 console.log("user_list_following",user_list_following)
-                 setDataFollow(user_list_following)
-
-             }
-         ).catch(err =>{
-             console.log(err)
-         })
-
-        }
-        getFollowing()
-    }, []);
-    console.log("check follow",DataFollow)
-    const LinkFollow: Array<LinkItemProps> = DataFollow.map(
-        (item: any) => { return {name:item.firstName+" "+item.lastName ,link:"/profile/"+item._id,avatar:"http://127.0.0.1:5000/uploads/1701270079511.png"}}
-    )
-    console.log("abc555",LinkFollow)
     // pos={"fixed"}
     return (<Box minH="100vh" bg={useColorModeValue("white", 'gray.900')}>
         <SidebarContent onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
         <Drawer
             isOpen={isOpen}
-            placement="right"
+            placement="left"
             onClose={onClose}
             // returnFocusOnClose={}
             onOverlayClick={onClose}
@@ -100,6 +76,8 @@ export default function ListFollowing() {
             </DrawerContent>
         </Drawer>
         {/* mobilenav */}
+      {/* mobilenav */}
+      {/*<MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />*/}
 
         <Box ml={{ base: 0, md: 60 }} p="4">
             {/* Content */}
@@ -116,7 +94,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
     return (<Box
         borderRight="1px"
         borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-        w={{ base: 'full' }}
+        // w={{ base: 'full' }}
         maxHeight={"100%"}
         // pos={"fixed"}
 
@@ -130,8 +108,61 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         style={{ transition: "transform 0.3s ease-in-out" }}
 
         {...rest}>
+          <Box borderBottomColor={"black"}
+
+            style={{ textDecoration: 'none' }}
+            _focus={{ boxShadow: 'none' }}
+            borderBottom="2px solid #ccc" >
+
+
+
+            <Flex
+                align="center"
+                p="4"
+                mx="4"
+                mt={3}
+                borderRadius="lg"
+                role="group"
+                // cursor="pointer"
+
+            >
+
+                <Avatar size={"lg"} src={"http://127.0.0.1:5000/uploads/1700656445602.png"}></Avatar>
+                < Heading size={"10px"} ml={4}> Lê Khánh Linh</Heading>
+                 <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
+
+
+
+
+            </Flex>
+        </Box>
         <Box
             as="a"
+
+            style={{ textDecoration: 'none' }}
+            _focus={{ boxShadow: 'none' }}
+        >
+            <Flex
+                align="center"
+                p="4"
+                mx="4"
+                mt={3}
+                borderRadius="lg"
+                role="group"
+                // cursor="pointer"
+
+            >
+
+                <Heading as="h2" size="l">
+                    Message
+                </Heading>
+
+
+
+
+            </Flex>
+        </Box>
+         <Box
 
             style={{ textDecoration: 'none' }}
             _focus={{ boxShadow: 'none' }}>
@@ -146,14 +177,14 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
             >
 
-                <Heading as="h2" size="l">
-                    List Following
-                </Heading>
+                <Input placeholder={"search"} borderRadius={10} bg={"gray.100"} ></Input>
+
 
 
 
             </Flex>
         </Box>
+
 
 
         {LinkItems.map((link) => (<NavItem key={link.name} name={link.name} link={link.link} avatar={link.avatar}>
@@ -195,4 +226,35 @@ const NavItem = ({ name, link, avatar, ...rest }: NavItemProps) => {
 
         </Flex>
     </Box>)
+}
+
+
+
+interface MobileProps extends FlexProps {
+  onOpen: () => void
+}
+const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+  return (
+    <Flex
+      ml={{ base: 0, md: 60 }}
+      px={{ base: 4, md: 24 }}
+      height="20"
+      alignItems="center"
+      bg={useColorModeValue('white', 'gray.900')}
+      borderBottomWidth="1px"
+      borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
+      justifyContent="flex-start"
+      {...rest}>
+      <IconButton
+        variant="outline"
+        onClick={onOpen}
+        aria-label="open menu"
+        icon={<FiMenu />}
+      />
+
+      <Text fontSize="2xl" ml="8" fontFamily="monospace" fontWeight="bold">
+        Logo
+      </Text>
+    </Flex>
+  )
 }

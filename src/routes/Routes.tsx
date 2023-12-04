@@ -7,7 +7,6 @@ import {Profile_page} from "../pages/Profile/Profile_page";
 import ForgotPasswordForm from "../components/ForgotPasswordForm";
 import ResetPasswordForm from "../components/ResetPasswordForm";
 import SignUpPage from "../pages/Auth/SignUpPage";
-import {Chat_page} from "../pages/Chat/Chat_page";
 import {Profile_page_client} from "../pages/Profile/Profile_page_client";
 import NotFound from "../pages/NotFound/NotFound";
 import {PostWithComment} from "../components/PostwithComment";
@@ -48,9 +47,6 @@ const Routes = () => {
             path: "/", element: <Home_page/>,
         }, {
             path: "/profile", element: <Profile_page/>,
-        }, {
-            path: "/chat",
-            element: <Chat_page/>,
         },{
             path: "/profile/:id", element: <Profile_page_client/>,
 

@@ -130,7 +130,7 @@ export function FormEdit(data: any) {
                     <Modal isOpen={isOpen} onClose={handleClose}>
                         <ModalOverlay />
                         <ModalContent>
-                            <ModalHeader alignContent={"center"}>Create post</ModalHeader>
+                            <ModalHeader alignContent={"center"}>Edit post</ModalHeader>
                             <form onSubmit={handleSubmit}>
 
                                 <ModalCloseButton />

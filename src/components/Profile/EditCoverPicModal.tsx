@@ -152,7 +152,7 @@ export const EditCoverPicModal = (data: any) => {
             >
                 <ModalOverlay px={90}>
                     <ModalContent>
-                        <ModalHeader>Edit profile</ModalHeader>
+                        <ModalHeader>Cover picture</ModalHeader>
                         <ModalCloseButton/>
                         <ModalBody>
                             <input
