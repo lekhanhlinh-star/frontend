@@ -82,27 +82,26 @@ export default function Post(data: any) {
     }
 
 
-    // const [dataofreply, setdataofreply] = useState<any>(null);
-    // const [isreply, setisreply] = useState(false);
+    const [dataofreply, setdataofreply] = useState<any>(null);
+    const [isreply, setisreply] = useState(false);
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             if (data.data.replyTo) {
-    //                 await axios.get(`http://127.0.0.1:5000/api/v1/posts/${data.data.replyTo}`).then(data => {
-    //                     setdataofreply(data.data["data"]["doc"])
-    //                     setisreply(true)
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (data.data.replyTo) {
+                    await axios.get(`http://127.0.0.1:5000/api/v1/posts/${data.data.replyTo}`).then(data => {
+                        setdataofreply(data.data["data"]["doc"])
+                        setisreply(true)
 
-    //                 })
-    //             }
-    //         } catch {
-    //         }
-    //     };
+                    })
+                }
+            } catch {
+            }
+        };
 
-    //     fetchData();
-    // }, []);
+        fetchData();
+    }, []);
 
-    // console.log(data.data.retweetData)
 
     const [dataofreweet, setdataofreweet] = useState<any>(null);
     const [isreweet, setisreweet] = useState(false);
@@ -117,7 +116,6 @@ export default function Post(data: any) {
                         "Content-Type": "application/json", "authorization": `Bearer ${token}`,
                     },
                 });
-                // const user_list_following = response.data["data"]["doc"];
                 setdataofreweet(response.data["data"]["doc"]);
                 setisreweet(true)
             }
@@ -134,22 +132,8 @@ export default function Post(data: any) {
     }, [loading]);
 
 
-
-
-    // console.log(dataofreweet)
-
-
-    // var check_post2 = false
-    // try {
-    //     console.log("data", dataofreply.image[0].filename)
-    //     check_post2 = true
-
-    // } catch {
-    // }
-
-
-    const handlelike = (id: number) => {
-        axios.put(`http://127.0.0.1:5000/api/v1/posts/${id}/like`);
+    const handlelike = async (id: number) => {
+        await axios.put(`http://127.0.0.1:5000/api/v1/posts/${id}/like`);
         const button = document.getElementById(id.toString(),) as HTMLInputElement;
 
 
@@ -173,9 +157,7 @@ export default function Post(data: any) {
         const fetchData = async () => {
             try {
                 await axios.get(`http://127.0.0.1:5000/api/v1/posts/${data.data._id}/like`).then(data => {
-                    // console.log("data")
 
-                    // console.log(data.data.data.isLiked)
                     if (data.data.data.isLiked) {
                         setIslike('blue')
                     }
@@ -222,14 +204,14 @@ export default function Post(data: any) {
     };
 
 
-    const handleSubmit2 = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit2 = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         try {
             console.log("onSubmit")
 
             const token = localStorage.getItem("token");
-            axios.post('http://localhost:5000/api/v1/posts', {
+            await axios.post('http://localhost:5000/api/v1/posts', {
                 content: formDataPost.content, image: formDataPost.image, replyTo: data.data._id,
             }, {
                 headers: {
@@ -253,13 +235,12 @@ export default function Post(data: any) {
 
     const toast = useToast();
     // -----
-    const Deleteclick = (id: string) => {
-        axios.delete("http://localhost:5000/api/v1/posts/" + id, {
+    const Deleteclick = async (id: string) => {
+        await axios.delete("http://localhost:5000/api/v1/posts/" + id, {
             headers: {
                 "Content-Type": "application/json", "authorization": `Bearer ${token}`,
             },
         }).then(data => {
-            // console.log(data)
             toast({
                 title: "Delete post successful", status: "success", duration: 9000, isClosable: true, position: "top",
             });
@@ -325,81 +306,84 @@ export default function Post(data: any) {
 
 
 
+
     return (<Card my={4} borderRadius="30">
-        {/* {isreply ? (<ReplyPost data={dataofreply} />) : null} */}
+        {
+            !isreply ? (<CardHeader style={{ cursor: 'pointer' }}>
+                <Flex letterSpacing={4}>
+                    <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap' style={{ cursor: 'pointer' }}>
 
-        <CardHeader style={{ cursor: 'pointer' }}>
-            <Flex letterSpacing={4}>
-                <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap' style={{ cursor: 'pointer' }}>
+                        <Avatar onClick={Profileclick} style={{ cursor: 'pointer' }} name='Segun Adebayo'
+                            src={`http://127.0.0.1:5000/uploads/${data.data.postedBy["profilePic"].filename}`} />
 
-                    <Avatar onClick={Profileclick} style={{ cursor: 'pointer' }} name='Segun Adebayo'
-                        src={`http://127.0.0.1:5000/uploads/${data.data.postedBy["profilePic"].filename}`} />
+                        <Box>
+                            <Heading size='sm'></Heading>
+                            <Text onClick={Profileclick}
+                                style={{ cursor: 'pointer' }}>{`${data.data.postedBy["firstName"]} ${data.data.postedBy["lastName"]}`}</Text>
+                        </Box>
+                    </Flex>
+                    <Menu>
+                        <MenuButton
+                            as={IconButton}
+                            aria-label='Options'
+                            icon={<BsThreeDotsVertical />}
+                            variant='outline'
+                        />
+                        <MenuList>
+                            <MenuItem icon={<DeleteIcon />} onClick={onOpen1}>
+                                Delete
+                            </MenuItem>
+                            <AlertDialog
+                                isOpen={isOpen1}
+                                leastDestructiveRef={cancelRef}
+                                onClose={onClose1}>
 
-                    <Box>
-                        <Heading size='sm'></Heading>
-                        <Text onClick={Profileclick}
-                            style={{ cursor: 'pointer' }}>{`${data.data.postedBy["firstName"]} ${data.data.postedBy["lastName"]}`}</Text>
-                    </Box>
+                                <AlertDialogOverlay>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                                            Delete this post
+                                        </AlertDialogHeader>
+                                        <AlertDialogBody>
+                                            Are you sure? You can't undo this action afterwards.
+                                        </AlertDialogBody>
+                                        <AlertDialogFooter>
+                                            <Button ref={cancelRef} onClick={onClose1}>
+                                                Cancel
+                                            </Button>
+                                            <Button colorScheme="red" onClick={() => { Deleteclick(data.data._id); onClose1(); }} ml={3}>
+                                                Delete
+                                            </Button>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialogOverlay>
+                            </AlertDialog>
+                            <MenuItem icon={<EditIcon />} onClick={handleOpenForm}>
+                                Edit
+
+                            </MenuItem>
+
+                            {isOpen3 && <FormEdit data={data.data} onClose={handleCloseForm} />}
+
+
+                        </MenuList>
+                    </Menu>
                 </Flex>
-                <Menu>
-                    <MenuButton
-                        as={IconButton}
-                        aria-label='Options'
-                        icon={<BsThreeDotsVertical />}
-                        variant='outline'
-                    />
-                    <MenuList>
-                        <MenuItem icon={<DeleteIcon />} onClick={onOpen1}>
-                            Delete
-                        </MenuItem>
-                        <AlertDialog
-                            isOpen={isOpen1}
-                            leastDestructiveRef={cancelRef}
-                            onClose={onClose1}>
+            </CardHeader>) : null
+        }
 
-                            <AlertDialogOverlay>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                                        Delete this post
-                                    </AlertDialogHeader>
-                                    <AlertDialogBody>
-                                        Are you sure? You can't undo this action afterwards.
-                                    </AlertDialogBody>
-                                    <AlertDialogFooter>
-                                        <Button ref={cancelRef} onClick={onClose1}>
-                                            Cancel
-                                        </Button>
-                                        <Button colorScheme="red" onClick={() => { Deleteclick(data.data._id); onClose1(); }} ml={3}>
-                                            Delete
-                                        </Button>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialogOverlay>
-                        </AlertDialog>
-                        <MenuItem icon={<EditIcon />} onClick={handleOpenForm}>
-                            Edit
-
-                        </MenuItem>
-
-                        {isOpen3 && <FormEdit data={data.data} onClose={handleCloseForm} />}
-
-
-                    </MenuList>
-                </Menu>
-            </Flex>
-        </CardHeader>
 
         {
             isreweet ? (<PostShare data={dataofreweet} />) : null
         }
 
-        <CardBody onClick={() => postclick(data.data._id)} style={{ cursor: 'pointer' }}>
+        {!isreply ? (<CardBody onClick={() => postclick(data.data._id)} style={{ cursor: 'pointer' }}>
             <Text>
                 {data.data.content}
             </Text>
-        </CardBody>
+        </CardBody>) : null}
 
-        {check_post ? (
+
+        {check_post && !isreply ? (
 
             <AspectRatio maxH={"600px"} >
                 <Image
@@ -410,112 +394,109 @@ export default function Post(data: any) {
 
         ) : null}
 
+        {!isreply ? (
+            <CardFooter
+                // justify='space-between'
+                flexWrap='wrap'
+                sx={{
+                    '& > button': {
+                        minW: '136px',
+                    },
+                }}
+            >
+                <Tooltip id={`${data.data._id}_likecount`} label={like_count !== "" ? `${like_count} Like` : ""}>
+                    <Button id={data.data._id} flex='1' variant='ghost'
+                        leftIcon={<BiLike className='bi-like' style={{ color: islike }}
+                        />} onClick={() => handlelike(data.data._id)}
+                    >
+                        {`Like`}
+                    </Button>
+                </Tooltip>
 
-        <CardFooter
-            // justify='space-between'
-            flexWrap='wrap'
-            sx={{
-                '& > button': {
-                    minW: '136px',
-                },
-            }}
-        >
-            <Tooltip id={`${data.data._id}_likecount`} label={like_count !== "" ? `${like_count} Like` : ""}>
-                <Button id={data.data._id} flex='1' variant='ghost'
-                    leftIcon={<BiLike className='bi-like' style={{ color: islike }}
-                    />} onClick={() => handlelike(data.data._id)}
-                >
-                    {`Like`}
+                <Button flex='1' variant='ghost' leftIcon={<BiChat />} onClick={onOpen2}>
+                    Comment
                 </Button>
-            </Tooltip>
 
-            <Button flex='1' variant='ghost' leftIcon={<BiChat />} onClick={onOpen2}>
-                Comment
-            </Button>
+                <Modal isOpen={isOpen2} onClose={onClose2}>
+                    <ModalOverlay />
+                    <ModalContent>
+                        <ModalHeader alignContent={"center"}>Create post</ModalHeader>
+                        <form id="2" onSubmit={handleSubmit2}>
 
-            <Modal isOpen={isOpen2} onClose={onClose2}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader alignContent={"center"}>Create post</ModalHeader>
-                    <form id="2" onSubmit={handleSubmit2}>
+                            <ModalCloseButton />
+                            <ModalBody>
+                                <Avatar name='Segun Adebayo'
+                                    src={`http://127.0.0.1:5000/uploads/${data.data.postedBy["profilePic"].filename}`} />
 
-                        <ModalCloseButton />
-                        <ModalBody>
-                            <Avatar name='Segun Adebayo'
-                                src={`http://127.0.0.1:5000/uploads/${data.data.postedBy["profilePic"].filename}`} />
+                                <Input variant='flushed' placeholder="Enter your reply"
+                                    name="content"
+                                    value={formDataPost.content}
+                                    onChange={handleInputChange}
+                                />
+                                {previewImage &&
 
-                            <Input variant='flushed' placeholder="Enter your reply"
-                                name="content"
-                                value={formDataPost.content}
-                                onChange={handleInputChange}
-                            />
-                            {previewImage &&
+                                    <Image src={previewImage} alt="Selected Image" />}
 
-                                <Image src={previewImage} alt="Selected Image" />}
+                                <Card mt={2}>
 
-                            <Card mt={2}>
+                                    <Flex m={3}>
 
-                                <Flex m={3}>
+                                        <Center>
+                                            <Text m={2}>Add to your reply</Text>
+                                        </Center>
 
-                                    <Center>
-                                        <Text m={2}>Add to your reply</Text>
-                                    </Center>
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            style={{ display: 'none' }}
+                                            onChange={handleFileChange}
+                                        />
+                                        <Button leftIcon={<FcPanorama />} onClick={handleClickSelectFile}>Photo/video
+                                        </Button>
+                                    </Flex>
+                                </Card>
+                            </ModalBody>
 
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        style={{ display: 'none' }}
-                                        onChange={handleFileChange}
-                                    />
-                                    <Button leftIcon={<FcPanorama />} onClick={handleClickSelectFile}>Photo/video
-                                    </Button>
-                                </Flex>
-                            </Card>
-                        </ModalBody>
+                            <ModalFooter>
 
-                        <ModalFooter>
+                                <Button colorScheme='blue' mr={3} type="submit"
+                                    w={"full"}>
+                                    Post
+                                </Button>
 
-                            <Button colorScheme='blue' mr={3} type="submit"
-                                w={"full"}>
-                                Post
-                            </Button>
+                            </ModalFooter>
+                        </form>
 
-                        </ModalFooter>
-                    </form>
-
-                </ModalContent>
-            </Modal>
-            <Button flex='1' variant='ghost' leftIcon={<BiShare />} onClick={onOpen4}>
-                Share
-            </Button>
-            <AlertDialog
-                isOpen={isOpen4}
-                leastDestructiveRef={cancelRef}
-                onClose={onClose4}>
-                <AlertDialogOverlay>
-                    <AlertDialogContent>
-                        <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                            You want to share this post
-                        </AlertDialogHeader>
-                        <AlertDialogBody>
-                            Are you sure? You can't undo this action afterwards.
-                        </AlertDialogBody>
-                        <AlertDialogFooter>
-                            <Button ref={cancelRef} onClick={onClose4}>
-                                Cancel
-                            </Button>
-                            <Button colorScheme="blue" onClick={() => { handleShare(data.data._id); onClose4(); }} ml={3}>
-                                Share
-                            </Button>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialogOverlay>
-            </AlertDialog>
-        </CardFooter>
-
-
-
-
+                    </ModalContent>
+                </Modal>
+                <Button flex='1' variant='ghost' leftIcon={<BiShare />} onClick={onOpen4}>
+                    Share
+                </Button>
+                <AlertDialog
+                    isOpen={isOpen4}
+                    leastDestructiveRef={cancelRef}
+                    onClose={onClose4}>
+                    <AlertDialogOverlay>
+                        <AlertDialogContent>
+                            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                                You want to share this post
+                            </AlertDialogHeader>
+                            <AlertDialogBody>
+                                Are you sure? You can't undo this action afterwards.
+                            </AlertDialogBody>
+                            <AlertDialogFooter>
+                                <Button ref={cancelRef} onClick={onClose4}>
+                                    Cancel
+                                </Button>
+                                <Button colorScheme="blue" onClick={() => { handleShare(data.data._id); onClose4(); }} ml={3}>
+                                    Share
+                                </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialogOverlay>
+                </AlertDialog>
+            </CardFooter>
+        ) : null}
     </Card>);
 
 }

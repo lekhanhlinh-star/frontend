@@ -23,12 +23,18 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { BiChat, BiLike, BiShare } from "react-icons/bi";
 import Header from "./Common/Header"
 import Sidebar from "./Sidebar";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export function PostWithComment() {
     const id = useParams();
     // http://localhost:5000/api/v1/posts
     console.log("---")
+    const navigate = useNavigate();
+
+    const handlenav = (id: string) => {
+        navigate("/post/" + id);
+    }
+
     const token = localStorage.getItem("token");
 
     const [main_post, setmain_post] = useState<any>();
@@ -66,7 +72,7 @@ export function PostWithComment() {
                     },
                 }).then(data => {
                     if (data) {
-                        console.log("check_data",data.data.data["doc"])
+                        console.log("check_data", data.data.data["doc"])
                         setcomment(data.data.data["doc"])
                     }
                 }).catch(err => {
@@ -97,15 +103,17 @@ export function PostWithComment() {
     console.log(comment)
 
 
+
+
     return (
         <>
             <Header lastName={"Linh"} firstName={"Le"}
-                                    profilePic={""} />
+                profilePic={""} />
             <Flex letterSpacing={2}>
                 <Sidebar />
 
                 <Container alignContent={"center"}>
-                    <Card  my={5}>
+                    <Card my={5} >
                         <CardHeader >
                             <Flex letterSpacing={4}>
                                 <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
@@ -131,13 +139,13 @@ export function PostWithComment() {
                         </CardBody>
 
                         {check_post && main_post && main_post.image && main_post.image[0] && (
-    <Image
-        minW={"400px"}
-        minH={"400px"}
-        objectFit='cover'
-        src={`http://127.0.0.1:5000/uploads/${main_post.image[0]?.filename}`}
-    />
-)}
+                            <Image
+                                minW={"400px"}
+                                minH={"400px"}
+                                objectFit='cover'
+                                src={`http://127.0.0.1:5000/uploads/${main_post.image[0]?.filename}`}
+                            />
+                        )}
                         <CardFooter
                             justify='space-between'
                             flexWrap='wrap'
@@ -177,7 +185,7 @@ export function PostWithComment() {
                         <Card>
 
                             {comment.map((commentItem: any, index: any) => (
-                                <Flex key={index} ml={5} margin={5} letterSpacing={4}>
+                                <Flex as={"a"} key={index} ml={5} margin={5} letterSpacing={4} href={`/post/${commentItem._id}`} cursor={"pointer"}>
                                     <Avatar
                                         style={{ cursor: 'pointer' }}
                                         name='Segun Adebayo'
