@@ -164,8 +164,6 @@ const NavItem = ({ name, link, avatar, ...rest }: NavItemProps) => {
             {...rest}>
             <Avatar src={avatar} mr={5}></Avatar>
             <Text fontSize={"10px"}> {name}</Text>
-
-
         </Flex>
     </Box>)
 }
