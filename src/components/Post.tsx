@@ -40,7 +40,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { BiChat, BiLike, BiShare } from "react-icons/bi";
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FcPanorama } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { FormEdit } from "./FormEdit";
@@ -48,16 +48,15 @@ import { PostShare } from "./PostShare.";
 
 
 export default function Post(data: any) {
-    console.log(data)
+    // console.log(data)
     // const cancelRef = React.useRef()
     const cancelRef = useRef<HTMLButtonElement>(null);
-
+    const token = localStorage.getItem("token");
 
     const { isOpen: isOpen1, onOpen: onOpen1, onClose: onClose1 } = useDisclosure();
     const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure();
     const { isOpen: isOpen4, onOpen: onOpen4, onClose: onClose4 } = useDisclosure();
     const [isOpen3, setIsOpen3] = useState(false);
-    const token = localStorage.getItem("token");
     const handleOpenForm = () => {
         setIsOpen3(true);
     };
@@ -83,53 +82,70 @@ export default function Post(data: any) {
     }
 
 
-    const [dataofreply, setdataofreply] = useState<any>(null);
-    const [isreply, setisreply] = useState(false);
+    // const [dataofreply, setdataofreply] = useState<any>(null);
+    // const [isreply, setisreply] = useState(false);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (data.data.replyTo) {
-                    await axios.get(`http://127.0.0.1:5000/api/v1/posts/${data.data.replyTo}`).then(data => {
-                        setdataofreply(data.data["data"]["doc"])
-                        setisreply(true)
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             if (data.data.replyTo) {
+    //                 await axios.get(`http://127.0.0.1:5000/api/v1/posts/${data.data.replyTo}`).then(data => {
+    //                     setdataofreply(data.data["data"]["doc"])
+    //                     setisreply(true)
 
-                    })
-                }
-            } catch {
-            }
-        };
+    //                 })
+    //             }
+    //         } catch {
+    //         }
+    //     };
 
-        fetchData();
-    }, []);
+    //     fetchData();
+    // }, []);
+
+    // console.log(data.data.retweetData)
 
     const [dataofreweet, setdataofreweet] = useState<any>(null);
     const [isreweet, setisreweet] = useState(false);
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (data.data.replyTo) {
-                    await axios.get(`http://127.0.0.1:5000/api/v1/posts/${data.data.retweetUsers}`).then(data => {
-                        setdataofreweet(data.data["data"]["doc"])
-                        setisreweet(true)
+    const [loading, setLoading] = useState(true);
 
-                    })
-                }
-            } catch {
+    const getFollowing = useCallback(async () => {
+        try {
+            console.log(data.data.retweetData)
+            if (data.data.retweetData) {
+                const response = await axios.get(`http://127.0.0.1:5000/api/v1/posts/${data.data.retweetData}`, {
+                    headers: {
+                        "Content-Type": "application/json", "authorization": `Bearer ${token}`,
+                    },
+                });
+                // const user_list_following = response.data["data"]["doc"];
+                setdataofreweet(response.data["data"]["doc"]);
+                setisreweet(true)
             }
-        };
 
-        fetchData();
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
+    useEffect(() => {
+        getFollowing();
+    }, [loading]);
 
-    var check_post2 = false
-    try {
-        console.log("data", dataofreply.image[0].filename)
-        check_post2 = true
 
-    } catch {
-    }
+
+
+    // console.log(dataofreweet)
+
+
+    // var check_post2 = false
+    // try {
+    //     console.log("data", dataofreply.image[0].filename)
+    //     check_post2 = true
+
+    // } catch {
+    // }
 
 
     const handlelike = (id: number) => {
@@ -157,9 +173,9 @@ export default function Post(data: any) {
         const fetchData = async () => {
             try {
                 await axios.get(`http://127.0.0.1:5000/api/v1/posts/${data.data._id}/like`).then(data => {
-                    console.log("data")
+                    // console.log("data")
 
-                    console.log(data.data.data.isLiked)
+                    // console.log(data.data.data.isLiked)
                     if (data.data.data.isLiked) {
                         setIslike('blue')
                     }
@@ -213,8 +229,6 @@ export default function Post(data: any) {
             console.log("onSubmit")
 
             const token = localStorage.getItem("token");
-
-
             axios.post('http://localhost:5000/api/v1/posts', {
                 content: formDataPost.content, image: formDataPost.image, replyTo: data.data._id,
             }, {
@@ -312,7 +326,7 @@ export default function Post(data: any) {
 
 
     return (<Card my={4} borderRadius="30">
-        {isreply ? (<ReplyPost data={dataofreply} />) : null}
+        {/* {isreply ? (<ReplyPost data={dataofreply} />) : null} */}
 
         <CardHeader style={{ cursor: 'pointer' }}>
             <Flex letterSpacing={4}>
@@ -374,11 +388,17 @@ export default function Post(data: any) {
                 </Menu>
             </Flex>
         </CardHeader>
+
+        {
+            isreweet ? (<PostShare data={dataofreweet} />) : null
+        }
+
         <CardBody onClick={() => postclick(data.data._id)} style={{ cursor: 'pointer' }}>
             <Text>
                 {data.data.content}
             </Text>
         </CardBody>
+
         {check_post ? (
 
             <AspectRatio maxH={"600px"} >
@@ -389,6 +409,8 @@ export default function Post(data: any) {
             </AspectRatio>
 
         ) : null}
+
+
         <CardFooter
             // justify='space-between'
             flexWrap='wrap'
@@ -490,7 +512,10 @@ export default function Post(data: any) {
                 </AlertDialogOverlay>
             </AlertDialog>
         </CardFooter>
-        {isreweet ? (<PostShare data={dataofreweet} />) : null}
+
+
+
+
     </Card>);
 
 }
