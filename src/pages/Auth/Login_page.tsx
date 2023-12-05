@@ -52,6 +52,7 @@ export default function Login_page() {
                     console.log(response.data);
                     localStorage.setItem('token', response.data.token);
                     localStorage.setItem('_id', response.data.data["user"]._id)
+
                     toast({
                         title: 'Login successful', status: 'success', duration: 9000, isClosable: true, position: 'top',
                     })
