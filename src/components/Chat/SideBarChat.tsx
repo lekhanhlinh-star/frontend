@@ -36,10 +36,15 @@ interface User {
     id: string;
 }
 
-export default function SideBarChat({ setCurrentId }: any) {
+interface CurChat {
+    currentid: string;
+    user: User
+}
+
+export default function SideBarChat({ setcurrentchatinfo }: any) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     return (<Box minH="100vh" bg={useColorModeValue("white", 'gray.900')}>
-        <SidebarContent setCurrentId={setCurrentId} onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
+        <SidebarContent setcurrentchatinfo={setcurrentchatinfo} onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
         <Drawer
             isOpen={isOpen}
             placement="left"
@@ -48,7 +53,7 @@ export default function SideBarChat({ setCurrentId }: any) {
 
         >
             <DrawerContent >
-                <SidebarContent setCurrentId={setCurrentId} onClose={onClose} />
+                <SidebarContent setcurrentchatinfo={setcurrentchatinfo} onClose={onClose} />
             </DrawerContent>
         </Drawer>
 
@@ -61,14 +66,13 @@ export default function SideBarChat({ setCurrentId }: any) {
 
 interface SidebarProps extends BoxProps {
     onClose: () => void
-    setCurrentId: Function
+    setcurrentchatinfo: Function
 }
 
-const SidebarContent = ({ onClose, setCurrentId, ...rest }: SidebarProps) => {
+const SidebarContent = ({ onClose, setcurrentchatinfo, ...rest }: SidebarProps) => {
     const toast = useToast()
 
-    const [listuser, setlistuser] = useState<User[]>([])
-
+    const [curchat, setcurchat] = useState<CurChat[]>([])
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -82,12 +86,17 @@ const SidebarContent = ({ onClose, setCurrentId, ...rest }: SidebarProps) => {
                         if (respone) {
                             respone.data.data
                                 .map((temp: any) => {
+                                    var chatid
+                                        = temp.chatid
                                     temp.users
                                         .map((temp2: any) => {
-                                            setlistuser(prevList => [...prevList, {
-                                                name: temp2.name,
-                                                id: temp2._id,
-                                                avt: temp2.profilePic
+                                            setcurchat(prevList => [...prevList, {
+                                                currentid: chatid,
+                                                user: {
+                                                    name: temp2.name,
+                                                    id: temp2._id,
+                                                    avt: temp2.profilePic
+                                                }
                                             }]);
                                         })
                                 });
@@ -101,8 +110,8 @@ const SidebarContent = ({ onClose, setCurrentId, ...rest }: SidebarProps) => {
     }, []);
 
 
-    const handleClick = (id: string) => {
-        setCurrentId(id)
+    const handleClick = (link: CurChat) => {
+        setcurrentchatinfo(link)
     }
 
     return (<Box
@@ -180,12 +189,12 @@ const SidebarContent = ({ onClose, setCurrentId, ...rest }: SidebarProps) => {
             </Flex>
         </Box>
 
-        {listuser.map((link) =>
+        {curchat.map((link: CurChat) =>
             <Box
                 style={{ textDecoration: 'none' }}
                 _focus={{ boxShadow: 'none' }}
                 minW={50}
-                onClick={() => handleClick(link.id)}
+                onClick={() => handleClick(link)}
             >
                 <Flex
                     align="center"
@@ -200,8 +209,8 @@ const SidebarContent = ({ onClose, setCurrentId, ...rest }: SidebarProps) => {
                         // bgGradient: useColorModeValue("linear(to-l,#05020b,#34073d)", "linear(to-l, #7928CA, #FF0080)")
                     }}
                     {...rest}>
-                    <Avatar src={`http://localhost:5000/uploads/${link.avt}`} mr={5}></Avatar>
-                    <Text fontSize={"10px"}> {link.name}</Text>
+                    <Avatar src={`http://localhost:5000/uploads/${link.user.avt}`} mr={5}></Avatar>
+                    <Text fontSize={"10px"}> {link.user.name}</Text>
 
 
                 </Flex>
