@@ -26,7 +26,6 @@ import Post from "./Post";
 
 
 export function Explore() {
-    const toast = useToast()
     const [use_list, setUseList] = useState([] as any[])
     const [postList, setPostList] = useState([] as any[]);
     const [input_search, setInput_search] = useState("");
@@ -120,7 +119,7 @@ export function Explore() {
                         <Spacer />
 
                     </Flex>
-{/* 
+                    {/* 
 
                     <Flex direction="column" style={{ cursor: 'pointer' }}>
                         <Text align={"left"} as='b' pb={5} marginLeft={15} fontSize={15}>Trends</Text>

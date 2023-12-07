@@ -2,11 +2,14 @@ import {
     Avatar,
     Box,
     Breadcrumb, BreadcrumbLink,
+    Button,
+    Circle,
     Flex,
     Heading,
     HStack, IconButton,
     Input,
     Spacer,
+    Square,
     Tooltip,
     useColorModeValue, WrapItem
 } from "@chakra-ui/react";
@@ -14,7 +17,7 @@ import DrawerExample from "../MessageDrawer";
 import { BellIcon, SettingsIcon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import { AiFillCiCircle } from "react-icons/ai";
 interface User {
     name: string;
     avt: string | null;
@@ -58,11 +61,10 @@ export const Head_Chat = () => {
 
     return (
         <Box as={"nav"} py={3} top={0} height={"70px"}
-            bgGradient={useColorModeValue("linear(to-l,#05020b,#34073d)", "linear(to-l,#05020b,#34073d)")}
             zIndex={999}>
-            <Flex justify="space-between" color={"white"}>
-                <Avatar ml={10} ></Avatar>
-                <Heading alignContent={"center"} ml={7} color={"white"}>Toàn Nguyễn</Heading>
+            <Flex align="center" justify="center" color={"white"} ml={30}>
+                <Box w="16px" h="16px" borderRadius="50%" bg="red" />;
+                <Heading alignContent={"center"} ml={7} border={"29.26px"} fontFamily={"Montserrat"} color={"black"}>Toàn Nguyễn</Heading>
                 <Spacer />
             </Flex>
         </Box>

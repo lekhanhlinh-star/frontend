@@ -1,33 +1,23 @@
 'use client'
 
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
-    IconButton,
+    Avatar,
     Box,
+    BoxProps,
     CloseButton,
-    Flex,
-    Icon,
-    useColorModeValue,
-    Text,
     Drawer,
     DrawerContent,
-    useDisclosure,
-    BoxProps,
-    FlexProps,
-    Avatar,
+    Flex,
     Heading,
-    DrawerOverlay,
-    DrawerHeader,
-    DrawerBody, Input, useToast,
+    Input,
+    Spacer,
+    Text,
+    useColorModeValue,
+    useDisclosure,
+    useToast,
 } from '@chakra-ui/react'
-import {
-    FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiMenu,
-} from 'react-icons/fi'
-import { IconType } from 'react-icons'
-import { ReactText } from 'react'
 import axios from 'axios'
-
-
 
 
 interface User {
@@ -43,8 +33,14 @@ interface CurChat {
 
 export default function SideBarChat({ setcurrentchatinfo }: any) {
     const { isOpen, onOpen, onClose } = useDisclosure()
-    return (<Box minH="100vh" bg={useColorModeValue("white", 'gray.900')}>
-        <SidebarContent setcurrentchatinfo={setcurrentchatinfo} onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
+    return (<Flex bg={useColorModeValue("#ffffff", 'gray.900')}
+        minW={"450px"}
+        borderRight={"10px"}
+        borderRightColor={"#ff0000"}
+        border="1px solid #d9d9d9d9"
+    >
+        <SidebarContent setcurrentchatinfo={setcurrentchatinfo} onClose={() => onClose}
+            display={{ base: 'none', md: 'block' }} />
         <Drawer
             isOpen={isOpen}
             placement="left"
@@ -52,7 +48,7 @@ export default function SideBarChat({ setcurrentchatinfo }: any) {
             onOverlayClick={onClose}
 
         >
-            <DrawerContent >
+            <DrawerContent>
                 <SidebarContent setcurrentchatinfo={setcurrentchatinfo} onClose={onClose} />
             </DrawerContent>
         </Drawer>
@@ -61,7 +57,7 @@ export default function SideBarChat({ setcurrentchatinfo }: any) {
         <Box ml={{ base: 0, md: 60 }} p="4">
         </Box>
 
-    </Box>)
+    </Flex>)
 }
 
 interface SidebarProps extends BoxProps {
@@ -77,31 +73,26 @@ const SidebarContent = ({ onClose, setcurrentchatinfo, ...rest }: SidebarProps) 
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem("token");
-                await axios.get(`http://127.0.0.1:5000/api/v1/chats`,
-                    {
-                        headers: {
-                            'Content-Type': 'application/json', 'authorization': `Bearer ${token}`,
-                        }
-                    }).then(respone => {
-                        if (respone) {
-                            respone.data.data
-                                .map((temp: any) => {
-                                    var chatid
-                                        = temp.chatid
-                                    temp.users
-                                        .map((temp2: any) => {
-                                            setcurchat(prevList => [...prevList, {
-                                                currentid: chatid,
-                                                user: {
-                                                    name: temp2.name,
-                                                    id: temp2._id,
-                                                    avt: temp2.profilePic
-                                                }
-                                            }]);
-                                        })
-                                });
-                        }
-                    })
+                await axios.get(`http://127.0.0.1:5000/api/v1/chats`, {
+                    headers: {
+                        'Content-Type': 'application/json', 'authorization': `Bearer ${token}`,
+                    }
+                }).then(respone => {
+                    if (respone) {
+                        respone.data.data
+                            .map((temp: any) => {
+                                var chatid = temp.chatid
+                                temp.users
+                                    .map((temp2: any) => {
+                                        setcurchat(prevList => [...prevList, {
+                                            currentid: chatid, user: {
+                                                name: temp2.name, id: temp2._id, avt: temp2.profilePic
+                                            }
+                                        }]);
+                                    })
+                            });
+                    }
+                })
             } catch {
 
             }
@@ -114,109 +105,61 @@ const SidebarContent = ({ onClose, setcurrentchatinfo, ...rest }: SidebarProps) 
         setcurrentchatinfo(link)
     }
 
-    return (<Box
-        borderRight="1px"
-        borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-        // w={{ base: 'full' }}
-        maxHeight={"100%"}
-        // pos={"fixed"}
+    return (<Flex
 
+        height={"100%"}
         position={"fixed"}
-        overflow={"scroll"}
-        overflowY={"scroll"}
         overflowX={"hidden"}
         overscrollBehaviorY={"contain"}
 
-        overscrollBehavior={"none"}
+        // overscrollBehavior={"none"}
         style={{ transition: "transform 0.3s ease-in-out" }}
 
         {...rest}>
-        <Box borderBottomColor={"black"}
-
-            style={{ textDecoration: 'none' }}
-            _focus={{ boxShadow: 'none' }}
-            borderBottom="2px solid #ccc" >
 
 
 
-            <Flex
-                align="center"
-                p="4"
-                mx="4"
-                mt={3}
-                borderRadius="lg"
-                role="group"
-            // cursor="pointer"
-            >
-                <Avatar size={"lg"} src={"http://127.0.0.1:5000/uploads/1700656445602.png"}></Avatar>
-                < Heading size={"10px"} ml={4}> Lê Khánh Linh</Heading>
-                <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
-            </Flex>
-        </Box>
-        <Box
-            as="a"
+        <Flex
 
-            style={{ textDecoration: 'none' }}
-            _focus={{ boxShadow: 'none' }}
+            my={"50px"}
         >
-            <Flex
-                align="center"
-                p="4"
-                mx="4"
-                mt={3}
-                borderRadius="lg"
-                role="group"
-            >
-                <Heading as="h2" size="l">
-                    Message
-                </Heading>
-            </Flex>
-        </Box>
+            <Input height={"52px"} marginLeft={30} width={"370px"} placeholder={"Bạn bè, nhóm, tin nhắn..."}
+                fontFamily={"Montserrat"} fontWeight={"400"} lineHeight={"19.5px"} fontSize={"16px"}
+                borderRadius={"40px"} border={"3px"} borderColor={"#E9E9E9"} bg={"#E9E9E9"}></Input>
+        </Flex>
+
+
         <Box
-
-            style={{ textDecoration: 'none' }}
-            _focus={{ boxShadow: 'none' }}>
-            <Flex
-                align="center"
-                p="4"
-                mx="4"
-                mt={3}
-                borderRadius="lg"
-                role="group"
-                cursor="pointer"
-            >
-                <Input placeholder={"search"} borderRadius={10} bg={"gray.100"} ></Input>
-            </Flex>
-        </Box>
-
-        {curchat.map((link: CurChat) =>
-            <Box
-                style={{ textDecoration: 'none' }}
+            overflowY={"hidden"}
+        >
+            {curchat.map((link: CurChat) => <Flex alignItems={"center"} style={{ textDecoration: 'none' }}
                 _focus={{ boxShadow: 'none' }}
-                minW={50}
+                minW={"342px"}
+                minH={"88px"}
+                alignContent={"center"}
+                gap={"16px"}
+                borderRadius={"16px"}
+
+                maxW={"342px"}
+                maxH={"88px"}
+
+                cursor="pointer"
+                _hover={{
+                    bg: "#F5DFFF", color: 'white', // bgGradient: useColorModeValue("linear(to-l,#05020b,#34073d)", "linear(to-l, #7928CA, #FF0080)")
+                }}
+                marginLeft={"34px"}
                 onClick={() => handleClick(link)}
             >
-                <Flex
-                    align="center"
-                    p="4"
-                    mx="4"
-                    mt={3}
-                    borderRadius="lg"
-                    role="group"
-                    cursor="pointer"
-                    _hover={{
-                        bg: "rgb(215,36,141)", color: 'white',
-                        // bgGradient: useColorModeValue("linear(to-l,#05020b,#34073d)", "linear(to-l, #7928CA, #FF0080)")
-                    }}
-                    {...rest}>
-                    <Avatar src={`http://localhost:5000/uploads/${link.user.avt}`} mr={5}></Avatar>
-                    <Text fontSize={"10px"}> {link.user.name}</Text>
+                <Avatar height={"72px"} width={"72px"} src={`http://localhost:5000/uploads/${link.user.avt}`}
+                    mx={3}></Avatar>
+                <Text fontFamily={"Montserrat"} lineHeight={"21.94px"} fontWeight={"700"}
+                    fontSize={"18px"}> {link.user.name}</Text>
+                <Spacer></Spacer>
+                <Text fontSize={"14px"} fontFamily={"Montserrat"} lineHeight={"17.07px"} align={"right"}
+                    fontWeight={"400"} mr={"10px"} >11:04</Text>
+            </Flex>)}
+        </Box>
 
-
-                </Flex>
-            </Box>
-        )}
-
-    </Box>)
+    </Flex>)
 }
 
